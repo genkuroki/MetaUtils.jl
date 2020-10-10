@@ -1,0 +1,13 @@
+name = "MetaUtils"
+uuid = "ed17dc9e-20eb-4460-9701-8d0520e45e1f"
+authors = ["genkuroki <genkuroki@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
