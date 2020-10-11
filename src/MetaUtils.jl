@@ -1,14 +1,24 @@
 """
     MetaUtils
 
-Utilities for metaprogramming in Julia.
+contains utilities for metaprogramming in Julia.
 
-Exported: @show_sexpr, @show_tree, print_tree, show_expr, @show_expr, show_Sexpr, @show_Sexpr
+```julia
+export @show_sexpr, 
+    @show_tree, 
+    print_tree, 
+    show_expr, @show_expr, 
+    show_Sexpr, @show_Sexpr, 
+    texpr2expr, @teval
+```
 """
 module MetaUtils
 
-export @show_sexpr, @show_tree, print_tree, 
-    show_expr, @show_expr, show_Sexpr, @show_Sexpr, 
+export @show_sexpr, 
+    @show_tree, 
+    print_tree, 
+    show_expr, @show_expr, 
+    show_Sexpr, @show_Sexpr, 
     texpr2expr, @teval
 
 using InteractiveUtils: subtypes
@@ -108,23 +118,23 @@ function show_expr(io::IO, ex::LineNumberNode, inner; indent=expr_indent, head="
     show(io, ex.file); print(io, ')')
 end
 
+# See https://github.com/JuliaLang/julia/issues/6104#issuecomment-37262662
 function show_expr(io::IO, ex::QuoteNode, inner; indent=expr_indent, head="Expr")
-    print(io, head, "(:quote, ")
-    show_expr(io, ex.value, inner+indent; indent, head); print(io, ')')
+    print(io, "QuoteNode", "(")
+    show_expr(io, ex.value, inner+indent; indent, head)
+    print(io, ')')
 end
 
 function show_expr(io::IO, ex::Expr, inner; indent=expr_indent, head="Expr")
-    print(io, (iszero(inner) ? "" : "\n"), " "^inner, head, "(")
+    iszero(inner) || print(io, "\n")
+    print(io, " "^inner, head, "(")
     show_expr(io, ex.head, inner+indent; indent, head)
     for arg in ex.args
         print(io, ", ")
         show_expr(io, arg, inner+indent; indent, head)
     end
-    if isempty(ex.args)
-        print(io, ",)")
-    else
-        print(io, ')')
-    end
+    isempty(ex.args) && print(io, ',')
+    print(io, ')')
 end
 
 """
@@ -195,6 +205,7 @@ julia> texpr2expr((:call, :sin, (:call, :/, π, 6)))
 ```
 """
 texpr2expr(x) = x
+texpr2expr(q::QuoteNode) = QuoteNode(texpr2expr(q.value))
 
 function texpr2expr(t::Tuple)
     isempty(t) && return :(())
