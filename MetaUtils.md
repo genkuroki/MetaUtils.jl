@@ -8,19 +8,21 @@ jupyter:
       format_version: '1.1'
       jupytext_version: 1.2.1
   kernelspec:
-    display_name: Julia 1.5.2
+    display_name: Julia MKL depwarn -O3 1.5.2
     language: julia
-    name: julia-1.5
+    name: julia-mkl-depwarn--o3-1.5
 ---
 
 # MetaUtils
 
 * Author: Gen Kuroki
 * Date: 2020-10-11
+* Repository: https://github.com/genkuroki/MetaUtils.jl
+* File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
 <!-- #region {"toc": true} -->
 <h1>Table of Contents<span class="tocSkip"></span></h1>
-<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_sexpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_sexpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_sexpr, etc.</a></span></li><li><span><a href="#Evaluation-of-lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of lisp-like tuple expressions</a></span><ul class="toc-item"><li><span><a href="#Miscellaneous-examples-of-MetaUtils.@t" data-toc-modified-id="Miscellaneous-examples-of-MetaUtils.@t-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Miscellaneous examples of MetaUtils.@t</a></span></li><li><span><a href="#More-lisp-like-example" data-toc-modified-id="More-lisp-like-example-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>More lisp-like example</a></span></li></ul></li><li><span><a href="#Documents" data-toc-modified-id="Documents-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
+<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_sexpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_sexpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_sexpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#type-trees" data-toc-modified-id="type-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>type trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-line-number-node" data-toc-modified-id="macro-and-line-number-node-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and line number node</a></span></li><li><span><a href="#quote-node" data-toc-modified-id="quote-node-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>quote node</a></span></li></ul></li><li><span><a href="#Evaluation-of-lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of lisp-like tuple expressions</a></span><ul class="toc-item"><li><span><a href="#Miscellaneous-examples-of-MetaUtils.@t" data-toc-modified-id="Miscellaneous-examples-of-MetaUtils.@t-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Miscellaneous examples of MetaUtils.@t</a></span></li><li><span><a href="#More-lisp-like-example" data-toc-modified-id="More-lisp-like-example-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>More lisp-like example</a></span></li></ul></li><li><span><a href="#Documents" data-toc-modified-id="Documents-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
 <!-- #endregion -->
 
 ```julia
@@ -33,10 +35,6 @@ end
 
 ```julia
 using MetaUtils
-```
-
-```julia
-methods(eval)
 ```
 
 ## Explanatory examples
@@ -86,6 +84,9 @@ MetaUtils.@T (:call, :sin, (:call, :/, π, 6))
 ```
 
 ## Miscellaneous examples of @show_sexpr, etc.
+
+
+### for loop
 
 ```julia
 @show_sexpr for k in 1:10
@@ -143,12 +144,82 @@ end
 end
 ```
 
+### type trees
+
 ```julia
 print_tree(Number)
 ```
 
 ```julia
 print_tree(AbstractVector)
+```
+
+### function definition
+
+```julia
+@show_sexpr function f(x::T) where T<:Number
+    sin(x)
+end
+```
+
+```julia
+@show_tree function f(x::T) where T<:Number
+    sin(x)
+end
+```
+
+```julia
+@show_expr function f(x::T) where T<:Number
+    sin(x)
+end
+```
+
+```julia
+@show_Sexpr function f(x::T) where T<:Number
+    sin(x)
+end
+```
+
+### macro and line number node
+
+```julia
+@show_sexpr @show float(π)
+```
+
+```julia
+@show_tree @show float(π)
+```
+
+```julia
+@show_expr @show float(π)
+```
+
+```julia
+@show_Sexpr @show float(π)
+```
+
+```julia
+@teval (:macrocall, Symbol("@show"), (:call, :LineNumberNode, 1, Symbol("In[10]")), 
+    (:call, :float, :π))
+```
+
+### quote node
+
+```julia
+QuoteNode(:(sin(x))) |> Meta.show_sexpr
+```
+
+```julia
+QuoteNode(:(sin(x))) |> show_expr
+```
+
+```julia
+QuoteNode(:(sin(x))) |> show_Sexpr
+```
+
+```julia
+@teval (:quote, 
+    (:call, :sin, :x))
 ```
 
 ## Evaluation of lisp-like tuple expressions

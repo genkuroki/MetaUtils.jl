@@ -25,7 +25,7 @@ julia> using Pkg; Pkg.add(url="https://github.com/genkuroki/MetaUtils.jl")
 
 ## Examples
 
-For the detaild usage, see the Jupyter notebook `MetaUtils.ipynb`.
+For the detaild usage, see the Jupyter notebook [MetaUtils.ipynb](https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb).
 
 ```julia
 julia> using MetaUtils
