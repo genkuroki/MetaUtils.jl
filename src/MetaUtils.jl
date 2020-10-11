@@ -103,13 +103,13 @@ show_expr(io::IO, ex; indent=expr_indent, head="Expr") = show_expr(io, ex, 0; in
 show_expr(ex; indent=expr_indent, head="Expr") = show_expr(stdout, ex; indent, head)
 
 function show_expr(io::IO, ex::LineNumberNode, inner; indent=expr_indent, head="Expr")
-    print(io, "LineNumberNode(")
+    print(io, head, "(:call, :LineNumberNode, ")
     show(io, ex.line); print(io, ", ")
     show(io, ex.file); print(io, ')')
 end
 
 function show_expr(io::IO, ex::QuoteNode, inner; indent=expr_indent, head="Expr")
-    print(io, "QuoteNode(")
+    print(io, head, "(:quote, ")
     show_expr(io, ex.value, inner+indent; indent, head); print(io, ')')
 end
 
