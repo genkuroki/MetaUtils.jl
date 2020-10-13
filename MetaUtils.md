@@ -199,8 +199,8 @@ end
 ```
 
 ```julia
-@teval (:macrocall, Symbol("@show"), (:call, :LineNumberNode, 1, Symbol("In[10]")), 
-    (:call, :float, :π))
+@teval Expr(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[8]")), 
+    Expr(:call, :float, :π))
 ```
 
 ### QuoteNode
