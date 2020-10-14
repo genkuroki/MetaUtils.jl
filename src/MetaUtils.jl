@@ -8,8 +8,8 @@ export @show_sexpr,
     @show_tree, 
     print_tree, 
     show_expr, @show_expr, 
-    show_Sexpr, @show_Sexpr, 
-    texpr2expr, @teval
+    show_texpr, @show_texpr, 
+    texpr2expr, teval, @teval
 ```
 """
 module MetaUtils
@@ -18,8 +18,8 @@ export @show_sexpr,
     @show_tree, 
     print_tree, 
     show_expr, @show_expr, 
-    show_Sexpr, @show_Sexpr, 
-    texpr2expr, @teval
+    show_texpr, @show_texpr, 
+    texpr2expr, teval, @teval
 
 using InteractiveUtils: subtypes
 using AbstractTrees
@@ -156,7 +156,7 @@ macro show_expr(expr, linenums=false)
 end
 
 """
-    show_Sexpr([io::IO,], ex)
+    show_texpr([io::IO,], ex)
 
 Yet another `Meta.show_sexpr`.  It shows expression `ex` as a lisp style expression.
 
@@ -164,16 +164,16 @@ Remark: The indentation is different from `Meta.show_sexpr`.
 
 # Examples
 ```julia
-julia> show_Sexpr(:(f(x, g(y, z))))
+julia> show_texpr(:(f(x, g(y, z))))
 Expr(:call, :f, :x, 
     Expr(:call, :g, :y, :z))
 ```
 """
-show_Sexpr(io::IO, ex; indent=expr_indent) = show_expr(io, ex; indent, head="")
-show_Sexpr(ex; indent=expr_indent) = show_Sexpr(stdout, ex; indent)
+show_texpr(io::IO, ex; indent=expr_indent) = show_expr(io, ex; indent, head="")
+show_texpr(ex; indent=expr_indent) = show_texpr(stdout, ex; indent)
 
 """
-    @show_Sexpr(expr, linenums=false)
+    @show_texpr(expr, linenums=false)
 
 Yet another `@show_sexpr`.  It shows the lisp style S-expression of `expr` and prints the line number nodes if `linenums` is true.
 
@@ -182,14 +182,14 @@ Remark: The indentation is different from `@show_sexpr`.
 ## Example
 
 ```julia
-julia> @show_Sexpr 2x+1
+julia> @show_texpr 2x+1
 (:call, :+, 
     (:call, :*, 2, :x), 1)
 ```
 """
-macro show_Sexpr(expr, linenums=false)
+macro show_texpr(expr, linenums=false)
     linenums || Base.remove_linenums!(expr)
-    :(show_Sexpr($(QuoteNode(expr))))
+    :(show_texpr($(QuoteNode(expr))))
 end
 
 """
@@ -217,6 +217,27 @@ function texpr2expr(t::Tuple)
     end
     Expr(e...)
 end
+
+"""
+    teval(texpr)
+
+evaluates the lisp-like tuple expression `texpr`.
+
+Example: Calculation of `sin(π/6)`
+
+```julia
+julia> (:call, :sin, (:call, :/, π, 6)) |> teval
+0.49999999999999994
+```
+
+In some cases, you can omit `:call`.
+
+```julia
+julia> (:sin, (:/, π, 6)) |> teval
+0.49999999999999994
+```
+"""
+teval(texpr) = eval(texpr2expr(texpr))
 
 """
     @teval texpr
@@ -262,7 +283,7 @@ end
 """
     MetaUtils.@T texpr
 
-shows `show(texpr)`, `show_Sexpr(texpr)`, the Julia expression, and the value of the lisp-like tuple expression `texpr`.
+shows `show(texpr)`, `show_texpr(texpr)`, the Julia expression, and the value of the lisp-like tuple expression `texpr`.
 
 Example:
 ```julia
@@ -278,7 +299,7 @@ macro T(x)
     code = Base.MainInclude.eval(x)
     expr = texpr2expr(code)
     show(code)
-    print("\n→ "); show_Sexpr(expr); print("\n→ ")
+    print("\n→ "); show_texpr(expr); print("\n→ ")
     show(expr); print("\n→ "); show(Core.eval(Main, expr))
 end
 

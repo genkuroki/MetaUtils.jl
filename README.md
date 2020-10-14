@@ -74,19 +74,29 @@ Expr(:call, :+,
 ```
 
 ```julia
-julia> show_Sexpr(:(f(x, g(y, z))))
+julia> show_texpr(:(f(x, g(y, z))))
 Expr(:call, :f, :x, 
     Expr(:call, :g, :y, :z))
 ```
 
 ```julia
-julia> @show_Sexpr 2x+1
+julia> @show_texpr 2x+1
 (:call, :+, 
     (:call, :*, 2, :x), 1)
 ```
 
 ```julia
+julia> (:call, :sin, (:call, :/, π, 6)) |> teval
+0.49999999999999994
+```
+
+```julia
 julia> @teval (:call, :sin, (:call, :/, π, 6))
+0.49999999999999994
+```
+
+```julia
+julia> (:sin, (:/, π, 6)) |> teval
 0.49999999999999994
 ```
 

@@ -16,13 +16,13 @@ jupyter:
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-12
+* Date: 2020-10-11～2020-10-14
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
 <!-- #region {"toc": true} -->
 <h1>Table of Contents<span class="tocSkip"></span></h1>
-<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_sexpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_sexpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_sexpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#type-trees" data-toc-modified-id="type-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>type trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-LineNumberNode" data-toc-modified-id="macro-and-LineNumberNode-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and LineNumberNode</a></span></li><li><span><a href="#QuoteNode" data-toc-modified-id="QuoteNode-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>QuoteNode</a></span></li></ul></li><li><span><a href="#Evaluation-of-lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of lisp-like tuple expressions</a></span><ul class="toc-item"><li><span><a href="#Miscellaneous-examples-of-MetaUtils.@t" data-toc-modified-id="Miscellaneous-examples-of-MetaUtils.@t-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Miscellaneous examples of MetaUtils.@t</a></span></li><li><span><a href="#More-lisp-like-example" data-toc-modified-id="More-lisp-like-example-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>More lisp-like example</a></span></li></ul></li><li><span><a href="#Documents" data-toc-modified-id="Documents-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
+<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_texpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_texpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_texpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#type-trees" data-toc-modified-id="type-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>type trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-LineNumberNode" data-toc-modified-id="macro-and-LineNumberNode-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and LineNumberNode</a></span></li><li><span><a href="#QuoteNode" data-toc-modified-id="QuoteNode-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>QuoteNode</a></span></li></ul></li><li><span><a href="#Evaluation-of-lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of lisp-like tuple expressions</a></span><ul class="toc-item"><li><span><a href="#Miscellaneous-examples-of-MetaUtils.@t" data-toc-modified-id="Miscellaneous-examples-of-MetaUtils.@t-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Miscellaneous examples of MetaUtils.@t</a></span></li><li><span><a href="#More-lisp-like-example" data-toc-modified-id="More-lisp-like-example-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>More lisp-like example</a></span></li></ul></li><li><span><a href="#Documents" data-toc-modified-id="Documents-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
 <!-- #endregion -->
 
 ```julia
@@ -60,15 +60,19 @@ show_expr(:(f(x, g(y, z))))
 ```
 
 ```julia
-show_Sexpr(:(f(x, g(y, z))))
+show_texpr(:(f(x, g(y, z))))
 ```
 
 ```julia
-@show_Sexpr 2x+1
+@show_texpr 2x+1
 ```
 
 ```julia
 texpr2expr((:call, :sin, (:call, :/, π, 6)))
+```
+
+```julia
+(:call, :sin, (:call, :/, π, 6)) |> teval
 ```
 
 ```julia
@@ -83,20 +87,36 @@ MetaUtils.@t (:call, :sin, (:call, :/, π, 6))
 MetaUtils.@T (:call, :sin, (:call, :/, π, 6))
 ```
 
-## Miscellaneous examples of @show_sexpr, etc.
+```julia
+(:sin, (:/, π, 6)) |> teval
+```
+
+```julia
+@teval (:sin, (:/, π, 6))
+```
+
+```julia
+MetaUtils.@t (:sin, (:/, π, 6))
+```
+
+```julia
+MetaUtils.@T (:sin, (:/, π, 6))
+```
+
+## Miscellaneous examples of @show_texpr, etc.
 
 
 ### for loop
 
 ```julia
-@show_sexpr for k in 1:10
+@show_texpr for k in 1:10
     x = k*(k+1) ÷ 2
     println("k(k+1)/2 = ", x)
 end
 ```
 
 ```julia
-@show_sexpr for k in 1:10
+@show_texpr for k in 1:10
     x = k*(k+1) ÷ 2
     println("k(k+1)/2 = ", x)
 end true
@@ -138,7 +158,7 @@ end
 ```
 
 ```julia
-@show_Sexpr for k in 1:10
+@show_texpr for k in 1:10
     x = k*(k+1) ÷ 2
     println("k(k+1)/2 = ", x)
 end
@@ -157,7 +177,7 @@ print_tree(AbstractVector)
 ### function definition
 
 ```julia
-@show_sexpr function f(x::T) where T<:Number
+@show_texpr function f(x::T) where T<:Number
     sin(x)
 end
 ```
@@ -175,7 +195,7 @@ end
 ```
 
 ```julia
-@show_Sexpr function f(x::T) where T<:Number
+@show_texpr function f(x::T) where T<:Number
     sin(x)
 end
 ```
@@ -183,11 +203,15 @@ end
 ### macro and LineNumberNode
 
 ```julia
+@show_tree @show float(π)
+```
+
+```julia
 @show_sexpr @show float(π)
 ```
 
 ```julia
-@show_tree @show float(π)
+@teval (:macrocall, Symbol("@show"), :(#= In[34]:1 =#), (:call, :float, :π))
 ```
 
 ```julia
@@ -195,12 +219,22 @@ end
 ```
 
 ```julia
-@show_Sexpr @show float(π)
+Expr(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[36]")), 
+    Expr(:call, :float, :π)) |> eval
 ```
 
 ```julia
-@teval Expr(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[8]")), 
-    Expr(:call, :float, :π))
+@show_texpr @show float(π)
+```
+
+```julia
+(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[38]")), 
+    (:call, :float, :π)) |> teval
+```
+
+```julia
+@teval (:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[38]")), 
+    (:call, :float, :π))
 ```
 
 ### QuoteNode
@@ -218,7 +252,7 @@ QuoteNode(:(sin(x))) |> show_expr
 ```
 
 ```julia
-QuoteNode(:(sin(x))) |> show_Sexpr
+QuoteNode(:(sin(x))) |> show_texpr
 ```
 
 ```julia
@@ -395,7 +429,7 @@ MetaUtils.@T (:call,
 ```
 
 ```julia
-@show_Sexpr (((assoc, k, v)->assoc(k, v)))(function f(k, v)
+@show_texpr (((assoc, k, v)->assoc(k, v)))(function f(k, v)
         if eq(v, ())
             nil
         elseif eq(car(car(v)), k)
@@ -433,11 +467,15 @@ MetaUtils.@T (:call,
 ```
 
 ```julia
-@doc show_Sexpr
+@doc show_texpr
 ```
 
 ```julia
-@doc @show_Sexpr
+@doc @show_texpr
+```
+
+```julia
+@doc teval
 ```
 
 ```julia
