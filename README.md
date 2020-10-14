@@ -37,6 +37,11 @@ julia> @show_sexpr 2x+1
 ```
 
 ```julia
+julia> x = 10; (:call, :+, (:call, :*, 2, :x), 1) |> teval
+21
+```
+
+```julia
 julia> @show_tree 2x+1
 :call
 ├─ :+
@@ -74,6 +79,12 @@ Expr(:call, :+,
 ```
 
 ```julia
+julia> x = 10; Expr(:call, :+, 
+    Expr(:call, :*, 2, :x), 1) |> eval
+21
+```
+
+```julia
 julia> show_texpr(:(f(x, g(y, z))))
 Expr(:call, :f, :x, 
     Expr(:call, :g, :y, :z))
@@ -83,6 +94,12 @@ Expr(:call, :f, :x,
 julia> @show_texpr 2x+1
 (:call, :+, 
     (:call, :*, 2, :x), 1)
+```
+
+```julia
+julia> x = 10; (:call, :+, 
+    (:call, :*, 2, :x), 1) |> teval
+21
 ```
 
 ```julia

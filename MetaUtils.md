@@ -44,6 +44,10 @@ using MetaUtils
 ```
 
 ```julia
+x = 10; (:call, :+, (:call, :*, 2, :x), 1) |> teval
+```
+
+```julia
 @show_tree 2x+1
 ```
 
@@ -60,11 +64,21 @@ show_expr(:(f(x, g(y, z))))
 ```
 
 ```julia
+x = 10; Expr(:call, :+, 
+    Expr(:call, :*, 2, :x), 1) |> eval
+```
+
+```julia
 show_texpr(:(f(x, g(y, z))))
 ```
 
 ```julia
 @show_texpr 2x+1
+```
+
+```julia
+x = 10; (:call, :+, 
+    (:call, :*, 2, :x), 1) |> teval
 ```
 
 ```julia
@@ -219,7 +233,12 @@ end
 ```
 
 ```julia
-Expr(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[36]")), 
+Expr(:macrocall, Symbol("@show"), LineNumberNode(@__LINE__, @__FILE__), 
+    Expr(:call, :float, :π)) |> show_expr
+```
+
+```julia
+Expr(:macrocall, Symbol("@show"), LineNumberNode(@__LINE__, @__FILE__), 
     Expr(:call, :float, :π)) |> eval
 ```
 
@@ -228,12 +247,12 @@ Expr(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[36]")),
 ```
 
 ```julia
-(:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[38]")), 
+(:macrocall, Symbol("@show"), LineNumberNode(@__LINE__, @__FILE__), 
     (:call, :float, :π)) |> teval
 ```
 
 ```julia
-@teval (:macrocall, Symbol("@show"), LineNumberNode(1, Symbol("In[38]")), 
+@teval (:macrocall, Symbol("@show"), LineNumberNode(@__LINE__, @__FILE__),  
     (:call, :float, :π))
 ```
 

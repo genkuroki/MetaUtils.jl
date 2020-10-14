@@ -27,13 +27,19 @@ using AbstractTrees
 """
     @show_sexpr(expr, linenums=false)
 
-shows the lisp style S-expression of `expr` and prints the line number nodes if `linenums` is true.
+shows the lisp style S-expression of `expr` and prints the line number nodes if `linenums` is true.  This is the macro version of `Meta.show_sexpr`.
 
 ## Example
 
 ```julia
 julia> @show_sexpr 2x+1
 (:call, :+, (:call, :*, 2, :x), 1)
+```
+
+`teval` function can evaluate the output of `@show_sexpr`. 
+```julia
+julia> x = 10; (:call, :+, (:call, :*, 2, :x), 1) |> teval
+21
 ```
 """
 macro show_sexpr(expr, linenums=false)
@@ -140,7 +146,7 @@ end
 """
     @show_expr(expr, linenums=false)
 
-shows the Juia style expression of `expr` and prints the line number nodes if `linenums` is true.
+shows the Juia style expression of `expr` and prints the line number nodes if `linenums` is true.  This is the macro version of `show_expr`.
 
 ## Example
 
@@ -148,6 +154,14 @@ shows the Juia style expression of `expr` and prints the line number nodes if `l
 julia> @show_expr 2x+1
 Expr(:call, :+, 
     Expr(:call, :*, 2, :x), 1)
+```
+
+`eval` function can evaluate the output of `@show_expr`. 
+
+```julia
+julia> x = 10; Expr(:call, :+, 
+    Expr(:call, :*, 2, :x), 1) |> eval
+21
 ```
 """
 macro show_expr(expr, linenums=false)
@@ -185,6 +199,14 @@ Remark: The indentation is different from `@show_sexpr`.
 julia> @show_texpr 2x+1
 (:call, :+, 
     (:call, :*, 2, :x), 1)
+```
+
+`teval` function can evaluate the output of `@show_texpr`.
+
+```julia
+julia> x = 10; (:call, :+, 
+    (:call, :*, 2, :x), 1) |> teval
+21
 ```
 """
 macro show_texpr(expr, linenums=false)
@@ -237,7 +259,7 @@ julia> (:sin, (:/, π, 6)) |> teval
 0.49999999999999994
 ```
 """
-teval(texpr) = eval(texpr2expr(texpr))
+teval(texpr) = Base.MainInclude.eval(texpr2expr(texpr))
 
 """
     @teval texpr
@@ -259,7 +281,7 @@ julia> @teval (:sin, (:/, π, 6))
 ```
 """
 macro teval(texpr)
-    texpr2expr(Base.MainInclude.eval(texpr))
+    esc(texpr2expr(Base.MainInclude.eval(texpr)))
 end
 
 """
@@ -277,7 +299,7 @@ julia> MetaUtils.@t (:call, :sin, (:call, :/, π, 6))
 """
 macro t(x)
     expr = texpr2expr(Base.MainInclude.eval(x))
-    show(expr); print("\n→ "); show(Core.eval(Main, expr))
+    show(expr); print("\n→ "); show(Base.MainInclude.eval(expr))
 end
 
 """
@@ -300,7 +322,7 @@ macro T(x)
     expr = texpr2expr(code)
     show(code)
     print("\n→ "); show_texpr(expr); print("\n→ ")
-    show(expr); print("\n→ "); show(Core.eval(Main, expr))
+    show(expr); print("\n→ "); show(Base.MainInclude.eval(expr))
 end
 
 end
