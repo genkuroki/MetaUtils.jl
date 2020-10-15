@@ -496,7 +496,8 @@ MetaUtils.@T (:call,
 ```
 
 ```julia
-@show_texpr (((assoc, k, v)->assoc(k, v)))(function f(k, v)
+@show_texpr (((assoc, k, v)->assoc(k, v)))(
+    function f(k, v)
         if eq(v, nil)
             nil
         elseif eq(car(car(v)), k)
