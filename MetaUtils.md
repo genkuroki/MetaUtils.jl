@@ -501,6 +501,50 @@ MetaUtils.@T (:call,
     ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
 ```
 
+```julia
+(((assoc, k, v)->assoc(k, v)))(
+    function f(k, v)
+        if eq(v, ())              nil
+        elseif eq(car(car(v)), k) car(v)
+        else                      f(k, cdr(v)) end
+    end, 
+    :Apple, 
+    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+```
+
+```julia
+(((assoc, k, v)->assoc(k, v)))(
+    function f(k, v)
+        if eq(v, ())              nil
+        elseif eq(car(car(v)), k) car(v)
+        else                      f(k, cdr(v)) end
+    end, 
+    :Orange, 
+    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+```
+
+```julia
+(((assoc, k, v)->assoc(k, v)))(
+    function f(k, v)
+        if eq(v, ())              nil
+        elseif eq(car(car(v)), k) car(v)
+        else                      f(k, cdr(v)) end
+    end, 
+    :Lemmon, 
+    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+```
+
+```julia
+(((assoc, k, v)->assoc(k, v)))(
+    function f(k, v)
+        if eq(v, ())              nil
+        elseif eq(car(car(v)), k) car(v)
+        else                      f(k, cdr(v)) end
+    end, 
+    :Melon, 
+    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+```
+
 ## Documents
 
 ```julia
