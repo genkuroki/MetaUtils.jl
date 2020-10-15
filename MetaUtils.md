@@ -342,13 +342,15 @@ using MetaUtils: @t
 ```julia
 # Lisp-like functions
 
-eq(x, y) = x == y
-
 struct Nil end
 const nil = Nil()
 Base.show(io::IO, ::Nil) = print(io, "nil")
 null(x) = false
 null(::Nil) = true
+
+eq(x, y) = x == y
+eq(x::Tuple, ::Nil) = x == ()
+eq(::Nil, y::Tuple) = y == ()
 
 cons(x, y) = (x, y)
 cons(x, y::Tuple) = (x, y...)
@@ -364,6 +366,11 @@ cadr(x) = car(cdr(x))
 cdar(x) = cdr(car(x))
 cddr(x) = cdr(cdr(x))
 
+@show null(nil)
+@show null(1)
+@show eq((1,2), (1,2))
+@show eq(nil, ())
+@show eq((), nil)
 @show cons(1, 2)
 @show cons(1, (2, 3))
 @show cons((1, 2), 3)
@@ -403,10 +410,8 @@ https://nbviewer.jupyter.org/gist/genkuroki/b60908cca4f4978b8adcaa7955e7b5b6
 (:call, 
     (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
     (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
                 (:call, :f, :k, (:cdr, :v))))), 
     QuoteNode(:Orange), 
     (:tuple, 
@@ -419,10 +424,8 @@ https://nbviewer.jupyter.org/gist/genkuroki/b60908cca4f4978b8adcaa7955e7b5b6
 MetaUtils.@t (:call, 
     (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
     (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
                 (:call, :f, :k, (:cdr, :v))))), 
     QuoteNode(:Apple), 
     (:tuple, 
@@ -435,10 +438,22 @@ MetaUtils.@t (:call,
 MetaUtils.@t (:call, 
     (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
     (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
+                (:call, :f, :k, (:cdr, :v))))), 
+    QuoteNode(:Orange), 
+    (:tuple, 
+        (:tuple, QuoteNode(:Apple),  120), 
+        (:tuple, QuoteNode(:Orange), 210), 
+        (:tuple, QuoteNode(:Lemmon), 180), :nil))
+```
+
+```julia
+MetaUtils.@t (:call, 
+    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
+    (:function, :(f(k,v)), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
                 (:call, :f, :k, (:cdr, :v))))), 
     QuoteNode(:Lemmon), 
     (:tuple, 
@@ -451,28 +466,10 @@ MetaUtils.@t (:call,
 MetaUtils.@t (:call, 
     (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
     (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
                 (:call, :f, :k, (:cdr, :v))))), 
     QuoteNode(:Melon), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
-```
-
-```julia
-MetaUtils.@t (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Orange), 
     (:tuple, 
         (:tuple, QuoteNode(:Apple),  120), 
         (:tuple, QuoteNode(:Orange), 210), 
@@ -483,10 +480,8 @@ MetaUtils.@t (:call,
 MetaUtils.@T (:call, 
     (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
     (:function, :(f(k,v)), 
-        (:if, (:eq, :v, :nil),
-            :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), 
-                (:car, :v), 
+        (:if, (:eq, :v, (:tuple,)), :nil, 
+            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
                 (:call, :f, :k, (:cdr, :v))))), 
     QuoteNode(:Orange), 
     (:tuple, 
@@ -498,14 +493,12 @@ MetaUtils.@T (:call,
 ```julia
 @show_texpr (((assoc, k, v)->assoc(k, v)))(
     function f(k, v)
-        if eq(v, nil)
-            nil
-        elseif eq(car(car(v)), k)
-            car(v)
-        else
-            f(k, cdr(v))
-        end
-    end, :Orange, ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+        if eq(v, ())              nil
+        elseif eq(car(car(v)), k) car(v)
+        else                      f(k, cdr(v)) end
+    end, 
+    :Orange, 
+    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
 ```
 
 ## Documents
