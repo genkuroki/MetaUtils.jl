@@ -290,20 +290,37 @@ QuoteNode(
 ### Miscellaneous examples of MetaUtils.@t
 
 ```julia
-using MetaUtils: @t
+using MetaUtils: @t, @T
 ```
 
 ```julia
 # Define and run a function f(x) = sin(x)
 
 @t (:(=), :(f(x)), (:sin, :x))
+println()
 @t (:f, (:/, π, 6))
+```
+
+```julia
+# Define and run a function f(x) = sin(x)
+
+@T (:(=), :(f(x)), (:sin, :x))
+println()
+@T (:f, (:/, π, 6))
 ```
 
 ```julia
 # Define and run a function g(x) = sin(x)
 
 @t (:block,
+    (:function, :(g(x)), (:sin, :x)),
+    (:call, :g, (:/, π, 6)))
+```
+
+```julia
+# Define and run a function g(x) = sin(x)
+
+@T (:block,
     (:function, :(g(x)), (:sin, :x)),
     (:call, :g, (:/, π, 6)))
 ```

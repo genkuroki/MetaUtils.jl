@@ -281,7 +281,7 @@ julia> @teval (:sin, (:/, π, 6))
 ```
 """
 macro teval(texpr)
-    esc(texpr2expr(eval(texpr)))
+    esc(texpr2expr(Core.eval(__module__, texpr)))
 end
 
 """
@@ -298,8 +298,9 @@ julia> MetaUtils.@t (:call, :sin, (:call, :/, π, 6))
 ```
 """
 macro t(x)
-    expr = texpr2expr(eval(x))
-    show(expr); print("\n→ "); show(Main.eval(expr))
+    expr = texpr2expr(Core.eval(__module__, x))
+    show(expr); print("\n→ "); show(Core.eval(__module__, expr))
+    print("\n")
 end
 
 """
@@ -318,11 +319,12 @@ julia> MetaUtils.@T (:call, :sin, (:call, :/, π, 6))
 ```
 """
 macro T(x)
-    code = eval(x)
+    code = Core.eval(__module__, x)
     expr = texpr2expr(code)
     show(code)
     print("\n→ "); show_texpr(expr); print("\n→ ")
-    show(expr); print("\n→ "); show(Main.eval(expr))
+    show(expr); print("\n→ "); show(Core.eval(__module__, expr))
+    print("\n")
 end
 
 end
