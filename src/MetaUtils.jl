@@ -215,7 +215,7 @@ macro show_texpr(expr, linenums=false)
 end
 
 """
-    texpr2expr(x)
+    texpr2expr(x, m::Module=Main)
 
 converts a lisp-like tuple expression `x` to the executable expression of Julia.
 
@@ -226,22 +226,22 @@ julia> texpr2expr((:call, :sin, (:call, :/, π, 6)))
 :(sin(π / 6))
 ```
 """
-texpr2expr(x) = x
-texpr2expr(q::QuoteNode) = QuoteNode(texpr2expr(q.value))
+texpr2expr(x, m::Module=Main) = x
+texpr2expr(q::QuoteNode, m::Module=Main) = QuoteNode(texpr2expr(q.value))
 
-function texpr2expr(t::Tuple)
+function texpr2expr(t::Tuple, m::Module=Main)
     isempty(t) && return :(())
     @assert t[1] isa Symbol "The first element of "*sprint(show, t)*" is not a Symbol."
-    e = texpr2expr.(t)
+    e = texpr2expr.(t, Ref(m))
     if isdefined(Main, e[1])
-        f = Main.eval(e[1])
+        f = Core.eval(m, e[1])
         !isa(f, Core.Builtin) && isa(f, Function) && return Expr(:call, e...)
     end
     Expr(e...)
 end
 
 """
-    teval(texpr)
+    teval(texpr, m::Module=Main)
 
 evaluates the lisp-like tuple expression `texpr`.
 
@@ -259,7 +259,7 @@ julia> (:sin, (:/, π, 6)) |> teval
 0.49999999999999994
 ```
 """
-teval(texpr) = Main.eval(texpr2expr(texpr))
+teval(texpr, m::Module=Main) = Core.eval(m, texpr2expr(texpr, m))
 
 """
     @teval texpr
