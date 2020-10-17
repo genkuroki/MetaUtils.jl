@@ -234,7 +234,7 @@ function texpr2expr(t::Tuple)
     @assert t[1] isa Symbol "The first element of "*sprint(show, t)*" is not a Symbol."
     e = texpr2expr.(t)
     if isdefined(Main, e[1])
-        f = Base.MainInclude.eval(e[1])
+        f = Main.eval(e[1])
         !isa(f, Core.Builtin) && isa(f, Function) && return Expr(:call, e...)
     end
     Expr(e...)
@@ -259,7 +259,7 @@ julia> (:sin, (:/, π, 6)) |> teval
 0.49999999999999994
 ```
 """
-teval(texpr) = Base.MainInclude.eval(texpr2expr(texpr))
+teval(texpr) = Main.eval(texpr2expr(texpr))
 
 """
     @teval texpr
@@ -281,7 +281,7 @@ julia> @teval (:sin, (:/, π, 6))
 ```
 """
 macro teval(texpr)
-    esc(texpr2expr(Base.MainInclude.eval(texpr)))
+    esc(texpr2expr(eval(texpr)))
 end
 
 """
@@ -298,8 +298,8 @@ julia> MetaUtils.@t (:call, :sin, (:call, :/, π, 6))
 ```
 """
 macro t(x)
-    expr = texpr2expr(Base.MainInclude.eval(x))
-    show(expr); print("\n→ "); show(Base.MainInclude.eval(expr))
+    expr = texpr2expr(eval(x))
+    show(expr); print("\n→ "); show(Main.eval(expr))
 end
 
 """
@@ -318,11 +318,11 @@ julia> MetaUtils.@T (:call, :sin, (:call, :/, π, 6))
 ```
 """
 macro T(x)
-    code = Base.MainInclude.eval(x)
+    code = eval(x)
     expr = texpr2expr(code)
     show(code)
     print("\n→ "); show_texpr(expr); print("\n→ ")
-    show(expr); print("\n→ "); show(Base.MainInclude.eval(expr))
+    show(expr); print("\n→ "); show(Main.eval(expr))
 end
 
 end

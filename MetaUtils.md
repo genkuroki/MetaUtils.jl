@@ -16,7 +16,7 @@ jupyter:
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-14
+* Date: 2020-10-11～2020-10-17
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
