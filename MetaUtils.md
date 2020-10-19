@@ -22,7 +22,7 @@ jupyter:
 
 <!-- #region {"toc": true} -->
 <h1>Table of Contents<span class="tocSkip"></span></h1>
-<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_texpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_texpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_texpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#type-trees" data-toc-modified-id="type-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>type trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-LineNumberNode" data-toc-modified-id="macro-and-LineNumberNode-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and LineNumberNode</a></span></li><li><span><a href="#QuoteNode" data-toc-modified-id="QuoteNode-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>QuoteNode</a></span></li></ul></li><li><span><a href="#Evaluation-of-lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of lisp-like tuple expressions</a></span><ul class="toc-item"><li><span><a href="#Miscellaneous-examples-of-MetaUtils.@t" data-toc-modified-id="Miscellaneous-examples-of-MetaUtils.@t-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Miscellaneous examples of MetaUtils.@t</a></span></li><li><span><a href="#More-lisp-like-example" data-toc-modified-id="More-lisp-like-example-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>More lisp-like example</a></span></li></ul></li><li><span><a href="#Documents" data-toc-modified-id="Documents-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
+<div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_texpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_texpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_texpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#type-trees" data-toc-modified-id="type-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>type trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-LineNumberNode" data-toc-modified-id="macro-and-LineNumberNode-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and LineNumberNode</a></span></li><li><span><a href="#QuoteNode" data-toc-modified-id="QuoteNode-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>QuoteNode</a></span></li></ul></li><li><span><a href="#Evaluation-of-Lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-Lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of Lisp-like tuple expressions</a></span></li><li><span><a href="#Plot-example" data-toc-modified-id="Plot-example-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Plot example</a></span></li><li><span><a href="#Documents" data-toc-modified-id="Documents-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
 <!-- #endregion -->
 
 ```julia
@@ -284,10 +284,9 @@ QuoteNode(
     (:call, :sin, :x))
 ```
 
-## Evaluation of lisp-like tuple expressions
+## Evaluation of Lisp-like tuple expressions
 
-
-### Miscellaneous examples of MetaUtils.@t
+If you want more Lisp-like examamples, see [LispLikeEval.ipynb](https://nbviewer.jupyter.org/github/genkuroki/LispLikeEval.jl/blob/master/LispLikeEval.ipynb).
 
 ```julia
 using MetaUtils: @t, @T
@@ -354,212 +353,99 @@ println()
 @t (:tuple, 1, 2, 3)
 ```
 
-### More lisp-like example
+## Plot example
 
 ```julia
-# Lisp-like functions
-
-struct Nil end
-const nil = Nil()
-Base.show(io::IO, ::Nil) = print(io, "nil")
-null(x) = false
-null(::Nil) = true
-
-eq(x, y) = x == y
-eq(x::Tuple, ::Nil) = x == ()
-eq(::Nil, y::Tuple) = y == ()
-
-cons(x, y) = (x, y)
-cons(x, y::Tuple) = (x, y...)
-
-car(x) = nil
-car(x::Tuple) = x[begin]
-
-cdr(x) = nil
-cdr(x::Tuple) = length(x) == 2 ? x[begin+1] : x[begin+1:end]
-
-caar(x) = car(car(x))
-cadr(x) = car(cdr(x))
-cdar(x) = cdr(car(x))
-cddr(x) = cdr(cdr(x))
-
-@show null(nil)
-@show null(1)
-@show eq((1,2), (1,2))
-@show eq(nil, ())
-@show eq((), nil)
-@show cons(1, 2)
-@show cons(1, (2, 3))
-@show cons((1, 2), 3)
-@show cons((1, 2), (3, 4, 5))
-@show car(1)
-@show cdr(1)
-@show car((1, 2))
-@show cdr((1, 2))
-@show car(((1, 2), (3, (4, 5)), 6, nil))
-@show cdr(((1, 2), (3, (4, 5)), 6, nil))
-@show caar(((1, 2), (3, (4, 5)), 6, nil))
-@show cadr(((1, 2), (3, (4, 5)), 6, nil))
-@show cdar(((1, 2), (3, (4, 5)), 6, nil))
-@show cddr(((1, 2), (3, (4, 5)), 6, nil))
-;
-```
-
-<!-- #region -->
-https://nbviewer.jupyter.org/gist/genkuroki/b60908cca4f4978b8adcaa7955e7b5b6
-
-**example 4**
-
-```lisp
-((lambda (assoc k v) (assoc k v))
- '(lambda (k v)
-    (cond ((eq v '()) nil)
-          ((eq (car (car v)) k)
-           (car v))
-          ('t (assoc k (cdr v)))))
- 'Orange
- '((Apple . 120) (Orange . 210) (Lemmon . 180)))
-=> (:Orange . 210)
-```
-<!-- #endregion -->
-
-```julia
-(:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Orange), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil)) |> texpr2expr
+begin
+    using Plots
+    n = 20
+    x = range(-π, π; length=20)
+    noise = 0.3randn(n)
+    y = sin.(x) + noise
+    X = hcat((x.^k for k in 0:3)...)
+    b = X\y
+    f(x) = sum(b[k+1]*x^k for k in 0:3)
+    xs = range(-π, π; length=400)
+    plot(; legend=:topleft)
+    scatter!(x, y; label="sample")
+    plot!(xs, sin.(xs); label="sin(x)", color=:blue, ls=:dash)
+    plot!(xs, f.(xs); label="degree-3 polynomial", color=:red, lw=2)
+end
 ```
 
 ```julia
-MetaUtils.@t (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Apple), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
+@show_texpr begin
+    using Plots
+    n = 20
+    x = range(-π, π; length=20)
+    noise = 0.3randn(n)
+    y = sin.(x) + noise
+    X = hcat((x.^k for k in 0:3)...)
+    b = X\y
+    f(x) = sum(b[k+1]*x^k for k in 0:3)
+    xs = range(-π, π; length=400)
+    plot(; legend=:topleft)
+    scatter!(x, y; label="sample")
+    plot!(xs, sin.(xs); label="sin(x)", color=:blue, ls=:dash)
+    plot!(xs, f.(xs); label="degree-3 polynomial", color=:red, lw=2)
+end
 ```
 
 ```julia
-MetaUtils.@t (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Orange), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
+@teval (:block, 
+    (:using, (:., :Plots)), 
+    (:(=), :n, 20), 
+    (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
+    (:(=), :noise, (:*, 0.3, (:randn, :n))), 
+    (:(=), :y, (:+, (:., :sin, (:tuple, :x)), :noise)), 
+    (:(=), :X, 
+        (:hcat, (:..., (:generator, (:call, :.^, :x, :k), (:(=), :k, (:(:), 0, 3)))))), 
+    (:(=), :b, (:\, :X, :y)), 
+    (:(=), (:call, :f, :x), 
+        (:sum, (:generator, (:*, (:ref, :b, (:+, :k, 1)), (:^, :x, :k)), 
+            (:(=), :k, (:(:), 0, 3))))), 
+    (:(=), :xs, (:range, (:parameters, (:kw, :length, 400)), (:-, :π), :π)), 
+    (:plot, (:parameters, (:kw, :legend, QuoteNode(:topleft)))), 
+    (:scatter!, (:parameters, (:kw, :label, "sample")), :x, :y), 
+    (:plot!, (:parameters, 
+            (:kw, :label, "sin(x)"), 
+            (:kw, :color, QuoteNode(:blue)), 
+            (:kw, :ls, QuoteNode(:dash))), 
+        :xs, (:., :sin, (:tuple, :xs))), 
+    (:plot!, (:parameters, 
+            (:kw, :label, "degree-3 polynomial"), 
+            (:kw, :color, QuoteNode(:red)), 
+            (:kw, :lw, 2)), 
+        :xs, (:., :f, (:tuple, :xs))))
 ```
 
 ```julia
-MetaUtils.@t (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Lemmon), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
-```
-
-```julia
-MetaUtils.@t (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Melon), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
-```
-
-```julia
-MetaUtils.@T (:call, 
-    (:->, (:tuple, :assoc, :k, :v), :(assoc(k,v))), 
-    (:function, :(f(k,v)), 
-        (:if, (:eq, :v, (:tuple,)), :nil, 
-            (:elseif, (:eq, (:car, (:car, :v)), :k), (:car, :v), 
-                (:call, :f, :k, (:cdr, :v))))), 
-    QuoteNode(:Orange), 
-    (:tuple, 
-        (:tuple, QuoteNode(:Apple),  120), 
-        (:tuple, QuoteNode(:Orange), 210), 
-        (:tuple, QuoteNode(:Lemmon), 180), :nil))
-```
-
-```julia
-@show_texpr (((assoc, k, v)->assoc(k, v)))(
-    function f(k, v)
-        if eq(v, ())              nil
-        elseif eq(car(car(v)), k) car(v)
-        else                      f(k, cdr(v)) end
-    end, 
-    :Orange, 
-    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
-```
-
-```julia
-(((assoc, k, v)->assoc(k, v)))(
-    function f(k, v)
-        if eq(v, ())              nil
-        elseif eq(car(car(v)), k) car(v)
-        else                      f(k, cdr(v)) end
-    end, 
-    :Apple, 
-    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
-```
-
-```julia
-(((assoc, k, v)->assoc(k, v)))(
-    function f(k, v)
-        if eq(v, ())              nil
-        elseif eq(car(car(v)), k) car(v)
-        else                      f(k, cdr(v)) end
-    end, 
-    :Orange, 
-    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
-```
-
-```julia
-(((assoc, k, v)->assoc(k, v)))(
-    function f(k, v)
-        if eq(v, ())              nil
-        elseif eq(car(car(v)), k) car(v)
-        else                      f(k, cdr(v)) end
-    end, 
-    :Lemmon, 
-    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
-```
-
-```julia
-(((assoc, k, v)->assoc(k, v)))(
-    function f(k, v)
-        if eq(v, ())              nil
-        elseif eq(car(car(v)), k) car(v)
-        else                      f(k, cdr(v)) end
-    end, 
-    :Melon, 
-    ((:Apple, 120), (:Orange, 210), (:Lemmon, 180), nil))
+(:block, 
+    (:using, (:., :Plots)), 
+    (:(=), :n, 20), 
+    (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
+    (:(=), :noise, (:*, 0.3, (:randn, :n))), 
+    (:(=), :y, (:+, (:., :sin, (:tuple, :x)), :noise)), 
+    (:(=), :X, 
+        (:hcat, (:..., (:generator, (:call, :.^, :x, :k), (:(=), :k, (:(:), 0, 3)))))), 
+    (:(=), :b, (:\, :X, :y)), 
+    (:(=), (:call, :f, :x), 
+        (:sum, (:generator, (:*, (:ref, :b, (:+, :k, 1)), (:^, :x, :k)), 
+            (:(=), :k, (:(:), 0, 3))))), 
+    (:(=), :xs, (:range, (:parameters, (:kw, :length, 400)), (:-, :π), :π)), 
+    (:plot, (:parameters, (:kw, :legend, QuoteNode(:topleft)))), 
+    (:scatter!, (:parameters, (:kw, :label, "sample")), :x, :y), 
+    (:plot!, (:parameters, 
+            (:kw, :label, "sin(x)"), 
+            (:kw, :color, QuoteNode(:blue)), 
+            (:kw, :ls, QuoteNode(:dash))), 
+        :xs, (:., :sin, (:tuple, :xs))), 
+    (:plot!, (:parameters, 
+            (:kw, :label, "degree-3 polynomial"), 
+            (:kw, :color, QuoteNode(:red)), 
+            (:kw, :lw, 2)), 
+        :xs, (:., :f, (:tuple, :xs)))) |> texpr2expr |> 
+x -> display("text/markdown", "```julia\n$x\n```")
 ```
 
 ## Documents
