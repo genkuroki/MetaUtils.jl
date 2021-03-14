@@ -47,7 +47,10 @@ macro show_sexpr(expr, linenums=false)
     :(Meta.show_sexpr($(QuoteNode(expr))))
 end
 
-AbstractTrees.printnode(io::IO, expr::Expr) = show(io, expr.head)
+# 2022-03-14: AbstractTrees.printnode(io::IO, expr::Expr) is already defined in
+# AbstractTrees/src/builtins.jl:14
+# 
+#AbstractTrees.printnode(io::IO, expr::Expr) = show(io, expr.head)
 
 """
     @show_tree(expr, maxdepth=10, linenums=false)
