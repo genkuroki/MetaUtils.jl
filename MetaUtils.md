@@ -8,15 +8,15 @@ jupyter:
       format_version: '1.1'
       jupytext_version: 1.2.1
   kernelspec:
-    display_name: Julia MKL depwarn -O3 1.5.2
+    display_name: Julia 1.7.0-DEV depwarn -O3
     language: julia
-    name: julia-mkl-depwarn--o3-1.5
+    name: julia-1.7-depwarn-o3
 ---
 
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-17
+* Date: 2020-10-11～2020-10-17, 2021-03-20
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 

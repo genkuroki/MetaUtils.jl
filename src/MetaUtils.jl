@@ -71,13 +71,13 @@ julia> @show_tree 2x+1
 """
 macro show_tree(expr, maxdepth=10, linenums=false)
     linenums || Base.remove_linenums!(expr)
-    :(print_tree($(QuoteNode(expr)), $(esc(maxdepth))))
+    :(print_tree($(QuoteNode(expr)); maxdepth = $(esc(maxdepth))))
 end
 
 AbstractTrees.children(T::Type) = subtypes(T)
 
 """
-    print_tree(T::Type, maxdepth=5; kwargs...)
+    print_tree(T::Type; kwargs...)
 
 prints the subtree of the type `T`.
 
