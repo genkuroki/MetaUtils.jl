@@ -6,7 +6,7 @@ contains utilities for metaprogramming in Julia.
 ```julia
 export @show_sexpr, 
     @show_tree, 
-    print_tree, 
+    print_subtypes, 
     show_expr, @show_expr, 
     show_texpr, @show_texpr, 
     texpr2expr, teval, @teval
@@ -16,12 +16,12 @@ module MetaUtils
 
 export @show_sexpr, 
     @show_tree, 
-    print_tree, 
+    print_subtypes, 
     show_expr, @show_expr, 
     show_texpr, @show_texpr, 
     texpr2expr, teval, @teval
 
-using InteractiveUtils: subtypes
+using InteractiveUtils: InteractiveUtils, subtypes
 using AbstractTrees
 
 """
@@ -47,9 +47,10 @@ macro show_sexpr(expr, linenums=false)
     :(Meta.show_sexpr($(QuoteNode(expr))))
 end
 
-# 2022-03-14: AbstractTrees.printnode(io::IO, expr::Expr) is already defined in
-# AbstractTrees/src/builtins.jl:14
-# 
+### 2022-03-14: AbstractTrees.printnode(io::IO, expr::Expr) is already defined in
+### AbstractTrees/src/builtins.jl:14
+### 
+### Warning: The following line is type piracy!
 #AbstractTrees.printnode(io::IO, expr::Expr) = show(io, expr.head)
 
 """
@@ -74,16 +75,27 @@ macro show_tree(expr, maxdepth=10, linenums=false)
     :(print_tree($(QuoteNode(expr)); maxdepth = $(esc(maxdepth))))
 end
 
-AbstractTrees.children(T::Type) = subtypes(T)
+### Warning: The following line is type piracy!
+#AbstractTrees.children(T::Type) = subtypes(T)
+
+### Wrap types in Box to prevent type piracy
+###
+struct Box{T} x::T end
+parent(b::Box) = b.x
+Base.show(io::IO, b::Box) = Base.show(io::IO, parent(b))
+InteractiveUtils.subtypes(b::Box{<:Type}) = Box.(subtypes(parent(b)))
+AbstractTrees.children(b::Box{<:Type}) = subtypes(b)
 
 """
-    print_tree(T::Type; kwargs...)
+    print_subtypes(T::Type; kwargs...)
+    print_subtypes(io::IO, T::Type; kwargs...)
+    print_subtypes(f, io::IO, T::Type; kwargs...)
 
-prints the subtree of the type `T`.
+prints the subtypes of `T` by `AbstractTrees.print_tree`.
 
 ## Example
 ```julia
-julia> print_tree(AbstractRange)
+julia> print_subtypes(AbstractRange)
 AbstractRange
 ├─ LinRange
 ├─ OrdinalRange
@@ -96,7 +108,9 @@ AbstractRange
 └─ StepRangeLen
 ```
 """
-print_tree
+print_subtypes(T::Type; kwargs...) = print_tree(Box(T); kwargs...)
+print_subtypes(io::IO, T::Type; kwargs...) = print_tree(io, Box(T); kwargs...)
+print_subtypes(f, io::IO, T::Type; kwargs...) =  print_tree(f, io::IO, Box(T); kwargs...)
 
 """
     const expr_indent = 4

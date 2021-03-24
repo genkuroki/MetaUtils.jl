@@ -10,6 +10,6 @@ x = 10
         "Expr(:call, :+, \n    Expr(:call, :*, 2, :x), 1)"
     @test sprint(show_texpr, :(2x + 1)) == 
         "(:call, :+, \n    (:call, :*, 2, :x), 1)"
-    @test sprint(print_tree, AbstractFloat) ==
+    @test sprint(print_subtypes, AbstractFloat) ==
         "AbstractFloat\n├─ BigFloat\n├─ Float16\n├─ Float32\n└─ Float64\n"
 end
