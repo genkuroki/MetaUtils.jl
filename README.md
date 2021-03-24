@@ -53,7 +53,7 @@ julia> @show_tree 2x+1
 ```
 
 ```julia
-julia> print_tree(AbstractRange)
+julia> print_subtypes(AbstractRange)
 AbstractRange
 ├─ LinRange
 ├─ OrdinalRange
