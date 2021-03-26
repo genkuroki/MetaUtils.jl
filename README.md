@@ -58,9 +58,9 @@ AbstractRange
 ├─ LinRange
 ├─ OrdinalRange
 │  ├─ AbstractUnitRange
-│  │  ├─ IdentityUnitRange
-│  │  ├─ OneTo
-│  │  ├─ Slice
+│  │  ├─ Base.IdentityUnitRange
+│  │  ├─ Base.OneTo
+│  │  ├─ Base.Slice
 │  │  └─ UnitRange
 │  └─ StepRange
 └─ StepRangeLen

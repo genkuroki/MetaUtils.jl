@@ -16,7 +16,7 @@ jupyter:
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-24
+* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-26
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
@@ -24,6 +24,10 @@ jupyter:
 <h1>Table of Contents<span class="tocSkip"></span></h1>
 <div class="toc"><ul class="toc-item"><li><span><a href="#Explanatory-examples" data-toc-modified-id="Explanatory-examples-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Explanatory examples</a></span></li><li><span><a href="#Miscellaneous-examples-of-@show_texpr,-etc." data-toc-modified-id="Miscellaneous-examples-of-@show_texpr,-etc.-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Miscellaneous examples of @show_texpr, etc.</a></span><ul class="toc-item"><li><span><a href="#for-loop" data-toc-modified-id="for-loop-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>for loop</a></span></li><li><span><a href="#subtype-trees" data-toc-modified-id="subtype-trees-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>subtype trees</a></span></li><li><span><a href="#function-definition" data-toc-modified-id="function-definition-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>function definition</a></span></li><li><span><a href="#macro-and-LineNumberNode" data-toc-modified-id="macro-and-LineNumberNode-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>macro and LineNumberNode</a></span></li><li><span><a href="#QuoteNode" data-toc-modified-id="QuoteNode-2.5"><span class="toc-item-num">2.5&nbsp;&nbsp;</span>QuoteNode</a></span></li></ul></li><li><span><a href="#Evaluation-of-Lisp-like-tuple-expressions" data-toc-modified-id="Evaluation-of-Lisp-like-tuple-expressions-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Evaluation of Lisp-like tuple expressions</a></span></li><li><span><a href="#Plot-example" data-toc-modified-id="Plot-example-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Plot example</a></span></li><li><span><a href="#Documents" data-toc-modified-id="Documents-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Documents</a></span></li></ul></div>
 <!-- #endregion -->
+
+```julia
+VERSION
+```
 
 ```julia
 if isfile("Project.toml")
@@ -179,6 +183,10 @@ end
 ```
 
 ### subtype trees
+
+```julia
+print_subtypes(AbstractRange)
+```
 
 ```julia
 print_subtypes(Number)

@@ -80,11 +80,12 @@ end
 
 ### Wrap types in Box to prevent type piracy
 ###
-struct Box{T} x::T end
-parent(b::Box) = b.x
-Base.show(io::IO, b::Box) = Base.show(io::IO, parent(b))
-InteractiveUtils.subtypes(b::Box{<:Type}) = Box.(subtypes(parent(b)))
-AbstractTrees.children(b::Box{<:Type}) = subtypes(b)
+struct TypeBox{T} x::T end
+Base.parent(b::TypeBox) = b.x
+Base.show(io::IO, b::TypeBox) = Base.show(io::IO, parent(b))
+InteractiveUtils.subtypes(b::TypeBox{<:Type}) = TypeBox.(subtypes(parent(b)))
+AbstractTrees.children(b::TypeBox{<:Type}) = subtypes(b)
+AbstractTrees.printnode(io::IO, b::TypeBox) = show(io, parent(b))
 
 """
     print_subtypes(T::Type; kwargs...)
@@ -100,17 +101,17 @@ AbstractRange
 ├─ LinRange
 ├─ OrdinalRange
 │  ├─ AbstractUnitRange
-│  │  ├─ IdentityUnitRange
-│  │  ├─ OneTo
-│  │  ├─ Slice
+│  │  ├─ Base.IdentityUnitRange
+│  │  ├─ Base.OneTo
+│  │  ├─ Base.Slice
 │  │  └─ UnitRange
 │  └─ StepRange
 └─ StepRangeLen
 ```
 """
-print_subtypes(T::Type; kwargs...) = print_tree(Box(T); kwargs...)
-print_subtypes(io::IO, T::Type; kwargs...) = print_tree(io, Box(T); kwargs...)
-print_subtypes(f, io::IO, T::Type; kwargs...) =  print_tree(f, io::IO, Box(T); kwargs...)
+print_subtypes(T::Type; kwargs...) = print_tree(TypeBox(T); kwargs...)
+print_subtypes(io::IO, T::Type; kwargs...) = print_tree(io, TypeBox(T); kwargs...)
+print_subtypes(f, io::IO, T::Type; kwargs...) =  print_tree(f, io::IO, TypeBox(T); kwargs...)
 
 """
     const expr_indent = 4

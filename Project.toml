@@ -1,7 +1,7 @@
 name = "MetaUtils"
 uuid = "ed17dc9e-20eb-4460-9701-8d0520e45e1f"
 authors = ["genkuroki <genkuroki@gmail.com> and contributors"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"

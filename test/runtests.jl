@@ -12,4 +12,6 @@ x = 10
         "(:call, :+, \n    (:call, :*, 2, :x), 1)"
     @test sprint(print_subtypes, AbstractFloat) ==
         "AbstractFloat\n├─ BigFloat\n├─ Float16\n├─ Float32\n└─ Float64\n"
+    @test sprint(print_subtypes, Ref) ==
+        "Ref\n├─ Base.CFunction\n├─ Base.RefArray\n├─ Base.RefValue\n├─ Core.Compiler.RefValue\n├─ Core.LLVMPtr\n└─ Ptr\n"
 end
