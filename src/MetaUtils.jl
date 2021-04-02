@@ -47,7 +47,7 @@ macro show_sexpr(expr, linenums=false)
     :(Meta.show_sexpr($(QuoteNode(expr))))
 end
 
-### 2022-03-14: AbstractTrees.printnode(io::IO, expr::Expr) is already defined in
+### 2021-03-14: AbstractTrees.printnode(io::IO, expr::Expr) is already defined in
 ### AbstractTrees/src/builtins.jl:14
 ### 
 ### Warning: The following line is type piracy!
@@ -75,10 +75,10 @@ macro show_tree(expr, maxdepth=10, linenums=false)
     :(print_tree($(QuoteNode(expr)); maxdepth = $(esc(maxdepth))))
 end
 
-### Warning: The following line is type piracy!
+### 2021-03-26 Warning: The following line is type piracy!
 #AbstractTrees.children(T::Type) = subtypes(T)
 
-### Wrap types in Box to prevent type piracy
+### 2021-03-26: Wrap types in Box to prevent type piracy
 ###
 struct TypeBox{T} x::T end
 Base.parent(b::TypeBox) = b.x
