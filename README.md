@@ -43,9 +43,9 @@ julia> x = 10; (:call, :+, (:call, :*, 2, :x), 1) |> teval
 
 ```julia
 julia> @show_tree 2x+1
-:call
+Expr(:call)
 ├─ :+
-├─ :call
+├─ Expr(:call)
 │  ├─ :*
 │  ├─ 2
 │  └─ :x

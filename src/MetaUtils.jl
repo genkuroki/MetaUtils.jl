@@ -61,9 +61,9 @@ shows the tree form of the expression `expr` with maxdepth and prints the line n
 ## Example
 ```julia
 julia> @show_tree 2x+1
-:call
+Expr(:call)
 ├─ :+
-├─ :call
+├─ Expr(:call)
 │  ├─ :*
 │  ├─ 2
 │  └─ :x
