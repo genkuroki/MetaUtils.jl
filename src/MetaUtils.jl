@@ -5,7 +5,7 @@ contains utilities for metaprogramming in Julia.
 
 ```julia
 export @show_sexpr, 
-    @show_tree, 
+    show_tree, @show_tree, 
     print_subtypes, 
     show_expr, @show_expr, 
     show_texpr, @show_texpr, 
@@ -15,7 +15,7 @@ export @show_sexpr,
 module MetaUtils
 
 export @show_sexpr, 
-    @show_tree, 
+    show_tree, @show_tree, 
     print_subtypes, 
     show_expr, @show_expr, 
     show_texpr, @show_texpr, 
@@ -74,6 +74,13 @@ macro show_tree(expr, maxdepth=10, linenums=false)
     linenums || Base.remove_linenums!(expr)
     :(print_tree($(QuoteNode(expr)); maxdepth = $(esc(maxdepth))))
 end
+
+"""
+    show_tree(expr) = AbstractTrees.print_tree(expr)
+
+can be regarded as the function version of `@show_tree`.
+"""
+show_tree(expr) = print_tree(expr)
 
 ### 2021-03-26 Warning: The following line is type piracy!
 #AbstractTrees.children(T::Type) = subtypes(T)

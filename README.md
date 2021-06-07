@@ -53,6 +53,17 @@ Expr(:call)
 ```
 
 ```julia
+julia> show_tree(:(2x+1))
+Expr(:call)
+├─ :+
+├─ Expr(:call)
+│  ├─ :*
+│  ├─ 2
+│  └─ :x
+└─ 1
+```
+
+```julia
 julia> print_subtypes(AbstractRange)
 AbstractRange
 ├─ LinRange
