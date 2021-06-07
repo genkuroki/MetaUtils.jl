@@ -1,22 +1,23 @@
 ---
 jupyter:
   jupytext:
+    cell_metadata_json: true
     formats: ipynb,md
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.1'
-      jupytext_version: 1.2.1
+      format_version: '1.3'
+      jupytext_version: 1.11.2
   kernelspec:
-    display_name: Julia 1.7.0-DEV depwarn -O3
+    display_name: Julia 1.7.0-DEV
     language: julia
-    name: julia-1.7-depwarn-o3
+    name: julia-1.7
 ---
 
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-26
+* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-26, 2021-06-07
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
@@ -56,6 +57,10 @@ x = 10; (:call, :+, (:call, :*, 2, :x), 1) |> teval
 ```
 
 ```julia
+show_tree(:(2x + 1))
+```
+
+```julia
 print_subtypes(AbstractRange)
 ```
 
@@ -85,15 +90,15 @@ x = 10; (:call, :+,
     (:call, :*, 2, :x), 1) |> teval
 ```
 
-```julia
+```julia tags=[]
 texpr2expr((:call, :sin, (:call, :/, π, 6)))
 ```
 
-```julia
+```julia tags=[]
 (:call, :sin, (:call, :/, π, 6)) |> teval
 ```
 
-```julia
+```julia tags=[]
 @teval (:call, :sin, (:call, :/, π, 6))
 ```
 
@@ -105,11 +110,11 @@ MetaUtils.@t (:call, :sin, (:call, :/, π, 6))
 MetaUtils.@T (:call, :sin, (:call, :/, π, 6))
 ```
 
-```julia
+```julia tags=[]
 (:sin, (:/, π, 6)) |> teval
 ```
 
-```julia
+```julia tags=[]
 @teval (:sin, (:/, π, 6))
 ```
 
@@ -168,14 +173,14 @@ Meta.@dump for k in 1:10
 end
 ```
 
-```julia
+```julia tags=[]
 @show_expr for k in 1:10
     x = k*(k+1) ÷ 2
     println("k(k+1)/2 = ", x)
 end
 ```
 
-```julia
+```julia tags=[]
 @show_texpr for k in 1:10
     x = k*(k+1) ÷ 2
     println("k(k+1)/2 = ", x)
@@ -370,9 +375,9 @@ begin
     x = range(-π, π; length=20)
     noise = 0.3randn(n)
     y = sin.(x) + noise
-    X = hcat((x.^k for k in 0:3)...)
+    X = x .^ (0:3)'
     b = X\y
-    f(x) = sum(b[k+1]*x^k for k in 0:3)
+    f(x) = evalpoly(x, b)
     xs = range(-π, π; length=400)
     plot(; legend=:topleft)
     scatter!(x, y; label="sample")
@@ -388,9 +393,9 @@ end
     x = range(-π, π; length=20)
     noise = 0.3randn(n)
     y = sin.(x) + noise
-    X = hcat((x.^k for k in 0:3)...)
+    X = x .^ (0:3)'
     b = X\y
-    f(x) = sum(b[k+1]*x^k for k in 0:3)
+    f(x) = evalpoly(x, b)
     xs = range(-π, π; length=400)
     plot(; legend=:topleft)
     scatter!(x, y; label="sample")
@@ -406,12 +411,9 @@ end
     (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
     (:(=), :noise, (:*, 0.3, (:randn, :n))), 
     (:(=), :y, (:+, (:., :sin, (:tuple, :x)), :noise)), 
-    (:(=), :X, 
-        (:hcat, (:..., (:generator, (:call, :.^, :x, :k), (:(=), :k, (:(:), 0, 3)))))), 
+    (:(=), :X, (:call, :.^, :x, (Symbol("'"), (:call, :(:), 0, 3)))),  
     (:(=), :b, (:\, :X, :y)), 
-    (:(=), (:call, :f, :x), 
-        (:sum, (:generator, (:*, (:ref, :b, (:+, :k, 1)), (:^, :x, :k)), 
-            (:(=), :k, (:(:), 0, 3))))), 
+    (:(=), (:call, :f, :x), (:block, (:call, :evalpoly, :x, :b))),
     (:(=), :xs, (:range, (:parameters, (:kw, :length, 400)), (:-, :π), :π)), 
     (:plot, (:parameters, (:kw, :legend, QuoteNode(:topleft)))), 
     (:scatter!, (:parameters, (:kw, :label, "sample")), :x, :y), 
@@ -434,12 +436,9 @@ end
     (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
     (:(=), :noise, (:*, 0.3, (:randn, :n))), 
     (:(=), :y, (:+, (:., :sin, (:tuple, :x)), :noise)), 
-    (:(=), :X, 
-        (:hcat, (:..., (:generator, (:call, :.^, :x, :k), (:(=), :k, (:(:), 0, 3)))))), 
+    (:(=), :X, (:call, :.^, :x, (Symbol("'"), (:call, :(:), 0, 3)))),  
     (:(=), :b, (:\, :X, :y)), 
-    (:(=), (:call, :f, :x), 
-        (:sum, (:generator, (:*, (:ref, :b, (:+, :k, 1)), (:^, :x, :k)), 
-            (:(=), :k, (:(:), 0, 3))))), 
+    (:(=), (:call, :f, :x), (:block, (:call, :evalpoly, :x, :b))),
     (:(=), :xs, (:range, (:parameters, (:kw, :length, 400)), (:-, :π), :π)), 
     (:plot, (:parameters, (:kw, :legend, QuoteNode(:topleft)))), 
     (:scatter!, (:parameters, (:kw, :label, "sample")), :x, :y), 
@@ -452,7 +451,7 @@ end
             (:kw, :label, "degree-3 polynomial"), 
             (:kw, :color, QuoteNode(:red)), 
             (:kw, :lw, 2)), 
-        :xs, (:., :f, (:tuple, :xs)))) |> texpr2expr |> 
+        :xs, (:., :f, (:tuple, :xs)))) |> texpr2expr |> 
 x -> display("text/markdown", "```julia\n$x\n```")
 ```
 
@@ -468,6 +467,10 @@ x -> display("text/markdown", "```julia\n$x\n```")
 
 ```julia
 @doc @show_tree
+```
+
+```julia
+@doc show_tree
 ```
 
 ```julia
