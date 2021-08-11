@@ -96,7 +96,7 @@ julia> x = 10; Expr(:call, :+,
 ```
 
 ```julia
-julia> show_texpr(:(f(x, g(y, z))))
+julia> show_expr(:(f(x, g(y, z))))
 Expr(:call, :f, :x, 
     Expr(:call, :g, :y, :z))
 ```
