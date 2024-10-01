@@ -7,17 +7,17 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.2
+      jupytext_version: 1.10.3
   kernelspec:
-    display_name: Julia 1.7.0-DEV
+    display_name: Julia 1.10.5
     language: julia
-    name: julia-1.7
+    name: julia-1.10
 ---
 
 # MetaUtils
 
 * Author: Gen Kuroki
-* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-26, 2021-06-07
+* Date: 2020-10-11～2020-10-17, 2021-03-20～2021-03-26, 2021-06-07, 2024-10-01
 * Repository: https://github.com/genkuroki/MetaUtils.jl
 * File: https://nbviewer.jupyter.org/github/genkuroki/MetaUtils.jl/blob/master/MetaUtils.ipynb
 
@@ -371,6 +371,7 @@ println()
 ```julia
 begin
     using Plots
+    default(fmt=:png)
     n = 20
     x = range(-π, π; length=20)
     noise = 0.3randn(n)
@@ -389,6 +390,7 @@ end
 ```julia
 @show_texpr begin
     using Plots
+    default(fmt=:png)
     n = 20
     x = range(-π, π; length=20)
     noise = 0.3randn(n)
@@ -407,6 +409,7 @@ end
 ```julia
 @teval (:block, 
     (:using, (:., :Plots)), 
+    (:default, (:kw, :fmt, QuoteNode(:png))), 
     (:(=), :n, 20), 
     (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
     (:(=), :noise, (:*, 0.3, (:randn, :n))), 
@@ -431,7 +434,8 @@ end
 
 ```julia
 (:block, 
-    (:using, (:., :Plots)), 
+    (:using, (:., :Plots)),
+    (:default, (:kw, :fmt, QuoteNode(:png))), 
     (:(=), :n, 20), 
     (:(=), :x, (:range, (:parameters, (:kw, :length, 20)), (:-, :π), :π)), 
     (:(=), :noise, (:*, 0.3, (:randn, :n))), 
